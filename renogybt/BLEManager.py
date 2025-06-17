@@ -29,6 +29,7 @@ class BLEManager:
             if dev.address != None and (dev.address.upper() == mac_address or (dev.name and dev.name.strip() == self.device_alias)):
                 logging.info(f"Found matching device {dev.name} => {dev.address}")
                 self.device = dev
+            print("Device Found - Name: " + dev.name + " Address:" + dev.address)
 
     async def connect(self):
         if not self.device: return logging.error("No device connected!")
