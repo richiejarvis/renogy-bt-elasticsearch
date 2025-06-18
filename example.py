@@ -5,8 +5,8 @@ import os
 import sys
 from renogybt import DCChargerClient, InverterClient, RoverClient, RoverHistoryClient, BatteryClient, DataLogger, Utils
 
-logging.basicConfig(level=logging.INFO)
-#logging.basicConfig(level=logging.WARNING)
+#logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 
 config_file = sys.argv[1] if len(sys.argv) > 1 else 'config.ini'
 config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), config_file)
