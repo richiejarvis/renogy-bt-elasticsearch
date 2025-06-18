@@ -5,8 +5,8 @@ import os
 import sys
 from renogybt import DCChargerClient, InverterClient, RoverClient, RoverHistoryClient, BatteryClient, DataLogger, Utils
 
-#logging.basicConfig(level=logging.INFO)
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(level=logging.WARNING)
 
 config_file = sys.argv[1] if len(sys.argv) > 1 else 'config.ini'
 config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), config_file)
@@ -16,7 +16,7 @@ data_logger: DataLogger = DataLogger(config)
 
 # the callback func when you receive data
 def on_data_received(client, data):
-    print(json.dumps(data))
+    #print(json.dumps(data))
     filtered_data = Utils.filter_fields(data, config['data']['fields'])
     logging.info(f"{client.ble_manager.device.name} => {filtered_data}")
     if config['remote_logging'].getboolean('enabled'):
