@@ -3,7 +3,7 @@ import logging
 import requests
 import paho.mqtt.publish as publish
 from configparser import ConfigParser
-from datetime import datetime
+import datetime
 
 PVOUTPUT_URL = 'http://pvoutput.org/service/r2/addstatus.jsp'
 
@@ -37,3 +37,24 @@ class DataLogger:
             "X-Pvoutput-SystemId":  self.config['pvoutput']['system_id']
         })
         print(f"pvoutput {response}")
+
+    def log_elasticsearch(self, dict_data):
+            # Set the current time in ISO8601 format
+            #date_time = datetime.now().strftime("%Y/%m/%dT%H:%M:%S+00:00")
+            date_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
+            #date_time = calendar.timegm(datetime.now().timetuple())
+            # Add the timestamp to the dict
+            dict_data["date"] = date_time
+            # Convert the dict data to JSON format ready to send to Elasticsearch
+            json_data = json.dumps(dict_data)
+            logging.info("JSON_Data: " + json_data)
+            # Build the destination URL from the config.ini data
+            # http://<user>:<password>@<server>:<port>/<index>/_doc
+            # Break this down into multiple lines for easy reading porpoises
+            complete_url = "https://" + self.config['elastic']['server'] + ":" + self.config['elastic']['port']
+            complete_url = complete_url + "/" + self.config['elastic']['index'] + "/_doc"
+            # Set the verify boolean
+            verify_flag = eval(self.config['elastic']['verify_ssl_cert'])
+            # Send the data to Elasticseach
+            response = requests.post(complete_url, data=json_data, auth=(self.config['elastic']['user'],self.config['elastic']['password']), headers={"Content-Type": "application/json"}, verify = verify_flag)
+            logging.info(f"Elasticsearch {response}")

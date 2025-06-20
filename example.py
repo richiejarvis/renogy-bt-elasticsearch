@@ -16,7 +16,6 @@ data_logger: DataLogger = DataLogger(config)
 
 # the callback func when you receive data
 def on_data_received(client, data):
-    #print(json.dumps(data))
     filtered_data = Utils.filter_fields(data, config['data']['fields'])
     logging.info(f"{client.ble_manager.device.name} => {filtered_data}")
     if config['remote_logging'].getboolean('enabled'):
@@ -25,6 +24,8 @@ def on_data_received(client, data):
         data_logger.log_mqtt(json_data=filtered_data)
     if config['pvoutput'].getboolean('enabled') and config['device']['type'] == 'RNG_CTRL':
         data_logger.log_pvoutput(json_data=filtered_data)
+    if config['elastic'].getboolean('enabled') and config['device']['type'] == 'RNG_CTRL':
+        data_logger.log_elasticsearch(dict_data=filtered_data)
     if not config['data'].getboolean('enable_polling'):
         client.stop()
 
