@@ -5,13 +5,23 @@ import os
 import sys
 from renogybt import DCChargerClient, InverterClient, RoverClient, RoverHistoryClient, BatteryClient, DataLogger, Utils
 
-logging.basicConfig(level=logging.INFO)
-#logging.basicConfig(level=logging.WARNING)
 
 config_file = sys.argv[1] if len(sys.argv) > 1 else 'config.ini'
 config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), config_file)
 config = configparser.ConfigParser(inline_comment_prefixes=('#'))
 config.read(config_path)
+# Pickup the log level from the config.ini
+
+logging.basicConfig()
+logger = logging.getLogger()
+log_level_info = {'logging.DEBUG': logging.DEBUG,
+                 'logging.INFO': logging.INFO,
+                 'logging.WARNING': logging.WARNING,
+                 'logging.ERROR': logging.ERROR,
+                 }
+my_log_level_from_config = config['log']['level']
+my_log_level = log_level_info.get(my_log_level_from_config, logging.ERROR)
+logger.setLevel(my_log_level)
 data_logger: DataLogger = DataLogger(config)
 
 # the callback func when you receive data
@@ -31,6 +41,7 @@ def on_data_received(client, data):
 
 # error callback
 def on_error(client, error):
+    print("hit this")
     logging.error(f"on_error: {error}")
 
 # start client

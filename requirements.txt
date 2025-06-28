@@ -2,4 +2,3 @@ bleak
 configparser
 requests
 paho-mqtt
-prometheus_client

@@ -137,6 +137,7 @@ class BaseClient:
     def __on_connect_fail(self, error):
         logging.error(f"Connection failed: {error}")
         self.__safe_callback(self.on_error_callback, error)
+        # It's OK to retry 
         self.stop()
 
     def stop(self):
@@ -149,10 +150,10 @@ class BaseClient:
         else:
             self.loop.create_task(self.disconnect())
 
-    def __safe_callback(self, calback, param):
-        if calback is not None:
+    def __safe_callback(self, callback, param):
+        if callback is not None:
             try:
-                calback(self, param)
+                callback(self, param)
             except Exception as e:
                 logging.error(f"__safe_callback => exception in callback! {e}")
                 traceback.print_exc()
