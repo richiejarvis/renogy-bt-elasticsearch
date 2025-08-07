@@ -6,4 +6,5 @@ RelayApp.py
 relay.py
 .DS_Store
 venv/
+config.ini
 config.ini.private

@@ -5,8 +5,6 @@ import paho.mqtt.publish as publish
 from configparser import ConfigParser
 import datetime
 
-PVOUTPUT_URL = 'http://pvoutput.org/service/r2/addstatus.jsp'
-
 class DataLogger:
     def __init__(self, config: ConfigParser):
         self.config = config
@@ -31,7 +29,7 @@ class DataLogger:
     def log_pvoutput(self, json_data):
         date_time = datetime.now().strftime("d=%Y%m%d&t=%H:%M")
         data = f"{date_time}&v1={json_data['power_generation_today']}&v2={json_data['pv_power']}&v3={json_data['power_consumption_today']}&v4={json_data['load_power']}&v5={json_data['controller_temperature']}&v6={json_data['battery_voltage']}"
-        response = requests.post(PVOUTPUT_URL, data=data, headers={
+        response = requests.post(self.config['pvoutput']['pvoutput_url'], data=data, headers={
             "Content-Type": "application/x-www-form-urlencoded",
             "X-Pvoutput-Apikey": self.config['pvoutput']['api_key'],
             "X-Pvoutput-SystemId":  self.config['pvoutput']['system_id']
@@ -51,7 +49,7 @@ class DataLogger:
             # Build the destination URL from the config.ini data
             # http://<user>:<password>@<server>:<port>/<index>/_doc
             # Break this down into multiple lines for easy reading porpoises
-            complete_url = "https://" + self.config['elastic']['server'] + ":" + self.config['elastic']['port']
+            complete_url = self.config['elastic']['http_prefix'] + self.config['elastic']['server'] + ":" + self.config['elastic']['port']
             complete_url = complete_url + "/" + self.config['elastic']['index'] + "/_doc"
             # Set the verify boolean
             verify_flag = eval(self.config['elastic']['verify_ssl_cert'])
