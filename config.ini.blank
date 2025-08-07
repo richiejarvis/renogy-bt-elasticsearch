@@ -36,6 +36,7 @@ password =
 
 [pvoutput]
 # free accounts has a cap of max one request per minute.
+pvoutput_url = http://pvoutput.org/service/r2/addstatus.jsp
 enabled = false
 api_key =
 system_id =
@@ -44,8 +45,10 @@ system_id =
 # Put data into an Elasticsearch index with a timestamp added
 enabled = true
 verify_ssl_cert = False
+http_prefix = https://
 server = <IP-ADDRESS>
 port = <PORT>
 index = <INDEX-NAME>
 user = <USERNAME>
 password = <PASSWORD>
+apikey = <API-KEY>
