@@ -19,21 +19,12 @@ source "$MY_PATH/venv/bin/activate"
 # Did the venv initialise OK?
 if [ $? -eq 0 ]; then
 	pip install -r "$MY_PATH/requirements.txt" -U
-	# Let's save the config.ini to config.ini.blank so our credentials isn't exposed
-	# We can copy in the .gitignored config.ini.private to config.ini temporarily
-	if [ -f "$MY_PATH/config.ini.private" ]; then
-		cp "$MY_PATH/config.ini.private" "$MY_PATH/config.ini"
-	fi
 	# For safety, reset the bluetooth adaptor in case it got stuck again!
 	sudo hciconfig hci0 reset
 	# We should be ready to run now
 	python "$MY_PATH/example.py"
 fi
 
-# We finished!  Let's copy the original blank config.ini back
-if [ -f "$MY_PATH/config.ini.blank" ]; then
-	cp "$MY_PATH/config.ini.blank" "$MY_PATH/config.ini"
-fi
         	
 
 
